@@ -8,6 +8,7 @@ import android.hardware.SensorManager;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 /**
  * Created by jcper on 12/3/2017.
@@ -19,13 +20,15 @@ public class LightTimer {
     private int timeskips;
     private SensorManager mSensorManager;
     private Sensor lightSensor;
+    private TextView debugText;
 
-    public LightTimer (ImageView image, int timeleft, int timeskips, SensorManager manager){
+    public LightTimer (ImageView image, int timeleft, int timeskips, SensorManager manager, TextView debugText){
         this.image = image;
         this.timeleft = timeleft;
         this.timeskips = timeskips;
         mSensorManager = manager;
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.debugText = debugText;
     }
 
     private final SensorEventListener mListener = new SensorEventListener(){
@@ -33,6 +36,10 @@ public class LightTimer {
         @Override
         public void onSensorChanged(SensorEvent event) {
             Log.d("Light", event.values[0]/10 + "");
+            if (debugText != null){
+                debugText.setText("Normal: " + event.values[0] + "Shortened: " + event.values[0]/10);
+            }
+
         }
 
         @Override

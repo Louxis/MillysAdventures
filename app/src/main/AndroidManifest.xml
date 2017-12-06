@@ -16,6 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".FallingCarrots"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_falling_carrots"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

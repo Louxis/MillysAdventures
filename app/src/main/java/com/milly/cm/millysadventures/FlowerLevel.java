@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,7 +27,11 @@ public class FlowerLevel extends AppCompatActivity {
         setContentView(R.layout.activity_flower_level);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        gameTimer = new LightTimer((ImageView)findViewById(R.id.flowerImage),40000,1000, (SensorManager) getSystemService(Context.SENSOR_SERVICE), (TextView)findViewById(R.id.secondText));
+        gameTimer = new LightTimer((ImageView)findViewById(R.id.flowerImage),30000,1000, (SensorManager) getSystemService(Context.SENSOR_SERVICE), (TextView)findViewById(R.id.secondText));
+        ImageView bulbImage = (ImageView)findViewById(R.id.bulbImg);
+        if(bulbImage != null){
+            gameTimer.setBulb(bulbImage);
+        }
         gameTimer.start();
     }
 

@@ -149,6 +149,7 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
             case MotionEvent.ACTION_MOVE :
             {
                 x = event.getRawX();
+
                 parms.leftMargin = (int) (x-dx);
                 view.setLayoutParams(parms);
 
@@ -160,6 +161,9 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
                 }else{
                     Log.d("pos", basket.getLeft() + "");
                     Log.d("BASKET", " NO ");
+                    //parms2.bottomMargin = (((ConstraintLayout.LayoutParams) pickup.getLayoutParams()).bottomMargin) + 1;
+                    parms2.verticalBias = (float) ((((ConstraintLayout.LayoutParams) pickup.getLayoutParams()).verticalBias) - 0.005);
+                    pickup.setLayoutParams(parms2);
                 }
             }
             break;

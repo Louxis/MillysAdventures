@@ -26,14 +26,18 @@ public class LightTimer {
     private TextView debugText;
     private CountDownTimer globalTimer;
     private ImageView bulbView;
-
+    private int score;
     //Used to calculate time offset
     private long baseTime;
     //Calculate time bonus
     private boolean penalty = false;
     private boolean mod1 = false;
     private boolean mod2 = false;
-    private boolean insta = false;
+    //change bulb tick rate
+    private boolean lowF = false;
+    private boolean midF = false;
+    private boolean highF = false;
+    private boolean vHighF = false;
 
     public LightTimer (ImageView image, long timeleft, int timeskips, SensorManager manager, TextView debugText){
         this.image = image;
@@ -49,6 +53,10 @@ public class LightTimer {
         this.bulbView = bulb;
     }
 
+    public int getScore(){
+        return score;
+    }
+
     private void changeBulbTicking(int delay){
         Animation animation = new AlphaAnimation(1, 0);
         animation.setDuration(delay);
@@ -60,58 +68,64 @@ public class LightTimer {
         }
     }
 
-    private boolean lowF = false;
-    private boolean midF = false;
-    private boolean highF = false;
     private final SensorEventListener mListener = new SensorEventListener(){
 
         @Override
         public void onSensorChanged(SensorEvent event) {
-            //Log.d("Light", event.values[0]/10 + "");
             if (debugText != null){
                 debugText.setText("Normal: " + event.values[0] + "Shortened: " + event.values[0]/10);
             }
-            //bulb test
             if(event.values[0] < 150 && !lowF){
-                changeBulbTicking(100);
+                changeBulbTicking(250);
                 lowF = true;
                 midF = false;
+                vHighF = false;
                 highF = false;
-            } else if (event.values[0] < 350 & event.values[0] >= 150 && !midF){
+            } else if (event.values[0] < 350 && event.values[0] >= 150 && !midF) {
                 changeBulbTicking(500);
                 midF = true;
                 lowF = false;
-                highF = false;
-            } else if(event.values[0] < 1000 && event.values[0] >= 350 && !highF){
-                changeBulbTicking(1000);
-                highF = true;
+                vHighF = false;
+            } else if(event.values[0] < 750 && event.values[0] >= 350 && !vHighF){
+                changeBulbTicking(750);
                 lowF = false;
                 midF = false;
+                highF = true;
+                vHighF = false;
+            } else if(event.values[0] < 1000 && event.values[0] >= 350 && !vHighF){
+                changeBulbTicking(1000);
+                vHighF = true;
+                lowF = false;
+                midF = false;
+                highF = false;
             }
+            //-----
             if(event.values[0] < 150 && !penalty){
-                Log.d("Flower","Penalty");
                 stop();
-                timeleft += 3000;
+                timeleft += 5000;
                 penalty = true;
                 mod1 = false;
+                mod2 = false;
+                score = 1;
                 start();
             }
             if(event.values[0] < 350 && event.values[0] >= 150 && !mod1){
-                Log.d("Flower","Mod1");
                 stop();
                 timeleft -= 4000;
                 penalty = false;
+                mod2 = false;
                 mod1 = true;
+                score = 2;
                 start();
             }
             if(event.values[0] < 1000 && event.values[0] >= 350 && !mod2){
-                Log.d("Flower","Mod2");
                 stop();
-                timeleft -= 3000;
+                timeleft -= 5000;
+                penalty = false;
+                mod1 = false;
+                mod2 = true;
+                score = 3;
                 start();
-            }
-            if(event.values[0] > 1500){
-                //insta = true;
             }
         }
 
@@ -143,6 +157,10 @@ public class LightTimer {
                 timeleft = millisUntilFinished;
             }
             public void onFinish() {
+                Log.d("FinishTest","I finished!");
+                if (debugText != null){
+                    debugText.setText(score + "");
+                }
                 stopSensor();
                 //enable next level
             }

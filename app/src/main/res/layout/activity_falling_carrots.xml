@@ -12,6 +12,7 @@
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
+
     <android.support.constraint.ConstraintLayout
         android:id="@+id/fullscreen_content"
         android:layout_width="match_parent"
@@ -19,28 +20,109 @@
         android:visibility="visible">
 
         <ImageView
-            android:id="@+id/basketImageView"
-            android:layout_width="117dp"
-            android:layout_height="71dp"
+            android:id="@+id/hillsImageView"
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            android:background="@drawable/cm_hills80"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
+        <ImageView
+            android:id="@+id/pine1ImageView"
+            android:layout_width="86dp"
+            android:layout_height="171dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/pine1"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.031"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.703"
+            app:srcCompat="@drawable/pinetree2" />
+
+        <ImageView
+            android:id="@+id/pine2ImageView"
+            android:layout_width="83dp"
+            android:layout_height="174dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/pine2"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.717"
+            app:srcCompat="@drawable/pinetree2" />
+
+        <ImageView
+            android:id="@+id/pine3ImageView"
+            android:layout_width="95dp"
+            android:layout_height="192dp"
             android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/pine3"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.114"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.947"
+            app:srcCompat="@drawable/pinetree2" />
+        <ImageView
+            android:id="@+id/basketImageView"
+            android:layout_width="82dp"
+            android:layout_height="41dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:contentDescription="@string/bunny_basket"
             android:scaleType="fitCenter"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.033"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.113"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.97"
+            app:layout_constraintVertical_bias="0.973"
             app:srcCompat="@drawable/basket80" />
+
+        <ImageView
+            android:id="@+id/bunny2ImageView"
+            android:layout_width="73dp"
+            android:layout_height="142dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="56dp"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/bunny2"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/basketImageView"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.96"
+            app:srcCompat="@drawable/bunny280" />
+
+        <ImageView
+            android:id="@+id/carrotImageView"
+            android:layout_width="30dp"
+            android:layout_height="64dp"
+            app:srcCompat="@drawable/carrot80"
+            tools:layout_editor_absoluteX="503dp"
+            tools:layout_editor_absoluteY="279dp" />
     </android.support.constraint.ConstraintLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        android:visibility="invisible">
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:id="@+id/fullscreen_content_controls"
@@ -54,6 +136,7 @@
             tools:ignore="UselessParent">
 
         </LinearLayout>
+
     </FrameLayout>
 
 </FrameLayout>

@@ -5,4 +5,8 @@
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="bunny_basket">Bunny Carrot Basket</string>
+    <string name="bunny2">Grey Bunny</string>
+    <string name="pine1">Pine Tree 1</string>
+    <string name="pine3">Pine Tree 3</string>
+    <string name="pine2">Pine Tree 2</string>
 </resources>

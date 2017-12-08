@@ -13,12 +13,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import java.util.Random;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
  */
 public class FallingCarrots extends AppCompatActivity implements View.OnTouchListener{
 
+    private ImageView basket, pickup;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -127,18 +130,20 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
         ImageView view = (ImageView) v;
-        ImageView basket = (ImageView) findViewById(R.id.basketImageView);
-        ImageView pickup = (ImageView) findViewById(R.id.pickupImageView);
+        basket = (ImageView) findViewById(R.id.basketImageView);
+        pickup = (ImageView) findViewById(R.id.pickupImageView);
         float x = 0, dx = 100;
         ConstraintLayout.LayoutParams parms = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-
+        ConstraintLayout.LayoutParams parms2 = (ConstraintLayout.LayoutParams) pickup.getLayoutParams();
+        Random rand;
 
         switch(event.getAction())
         {
             case MotionEvent.ACTION_DOWN :
             {
-                //parms = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+
             }
             break;
             case MotionEvent.ACTION_MOVE :
@@ -147,10 +152,13 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
                 parms.leftMargin = (int) (x-dx);
                 view.setLayoutParams(parms);
 
-
                 if (basket.getRight() >= pickup.getLeft() && basket.getLeft() <= pickup.getRight()) {
                     Log.d("BASKET", " YES ");
+                    rand = new Random();
+                    parms2.horizontalBias = (float) (rand.nextInt(9) / 10.0 + 0.1);
+                    pickup.setLayoutParams(parms2);
                 }else{
+                    Log.d("pos", basket.getLeft() + "");
                     Log.d("BASKET", " NO ");
                 }
             }

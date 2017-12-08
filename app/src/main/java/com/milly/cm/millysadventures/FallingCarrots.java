@@ -2,17 +2,16 @@ package com.milly.cm.millysadventures;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
+import android.graphics.Rect;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.*;
-
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -129,6 +128,8 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         ImageView view = (ImageView) v;
+        ImageView basket = (ImageView) findViewById(R.id.basketImageView);
+        ImageView pickup = (ImageView) findViewById(R.id.pickupImageView);
         float x = 0, dx = 100;
         ConstraintLayout.LayoutParams parms = (ConstraintLayout.LayoutParams) view.getLayoutParams();
 
@@ -145,6 +146,13 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
                 x = event.getRawX();
                 parms.leftMargin = (int) (x-dx);
                 view.setLayoutParams(parms);
+
+
+                if (basket.getRight() >= pickup.getLeft() && basket.getLeft() <= pickup.getRight()) {
+                    Log.d("BASKET", " YES ");
+                }else{
+                    Log.d("BASKET", " NO ");
+                }
             }
             break;
             case MotionEvent.ACTION_UP: {

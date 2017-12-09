@@ -146,7 +146,7 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
         display.getSize(displaySize);
 
         //Animation paramaters
-        final int amountToMoveDown = (displaySize.y - 140);//displaySize.y/4);
+        final int amountToMoveDown = (int) Math.ceil(displaySize.y*0.75);
         final int duration = 2000;
 
         anim = new TranslateAnimation(0, 0, 0, amountToMoveDown);

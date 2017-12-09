@@ -1,15 +1,19 @@
 package com.milly.cm.millysadventures;
 
+import android.app.Activity;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,6 +30,8 @@ public class LightTimer {
     private TextView debugText;
     private CountDownTimer globalTimer;
     private ImageView bulbView;
+    private ImageView beeView;
+    private TranslateAnimation beeAnimation;
     private int score;
     //Used to calculate time offset
     private long baseTime;
@@ -38,14 +44,17 @@ public class LightTimer {
     private boolean midF = false;
     private boolean highF = false;
     private boolean vHighF = false;
+    private Activity level;
+    private boolean ended = false;
 
-    public LightTimer (ImageView image, long timeleft, int timeskips, SensorManager manager, TextView debugText){
+    public LightTimer (Activity level, ImageView image, long timeleft, int timeskips, SensorManager manager, TextView debugText){
         this.image = image;
         this.timeleft = timeleft;
         this.baseTime = timeleft;
         this.timeskips = timeskips;
         mSensorManager = manager;
         lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.level = level;
         this.debugText = debugText;
     }
 
@@ -53,19 +62,32 @@ public class LightTimer {
         this.bulbView = bulb;
     }
 
+    public void playBee() {
+        this.beeView =  (ImageView)level.findViewById(R.id.beeImg);
+        int beeOffset = 160;
+        int centerScreen = level.getResources().getDisplayMetrics().widthPixels/2 + ( beeOffset / 2);
+        beeView.setX(beeView.getX() + beeOffset);
+        beeAnimation = new TranslateAnimation(0.0f, -centerScreen + beeOffset,
+                0.0f, 0.0f);          //  new TranslateAnimation(xFrom,xTo, yFrom,yTo)
+        beeAnimation.setDuration(5000);
+        beeAnimation.setFillAfter(true);
+        beeView.setVisibility(View.VISIBLE);
+        beeView.startAnimation(beeAnimation);
+    }
+
     public int getScore(){
         return score;
     }
 
     private void changeBulbTicking(int delay){
-        Animation animation = new AlphaAnimation(1, 0);
-        animation.setDuration(delay);
-        animation.setInterpolator(new LinearInterpolator());
-        animation.setRepeatCount(Animation.INFINITE);
-        animation.setRepeatMode(Animation.REVERSE);
-        if(bulbView != null){
-            bulbView.startAnimation(animation);
-        }
+            Animation animation = new AlphaAnimation(1, 0);
+            animation.setDuration(delay);
+            animation.setInterpolator(new LinearInterpolator());
+            animation.setRepeatCount(Animation.INFINITE);
+            animation.setRepeatMode(Animation.REVERSE);
+            if(bulbView != null){
+                bulbView.startAnimation(animation);
+            }
     }
 
     private final SensorEventListener mListener = new SensorEventListener(){
@@ -85,8 +107,9 @@ public class LightTimer {
                 changeBulbTicking(500);
                 midF = true;
                 lowF = false;
+                highF = false;
                 vHighF = false;
-            } else if(event.values[0] < 750 && event.values[0] >= 350 && !vHighF){
+            } else if(event.values[0] < 750 && event.values[0] >= 350 && !highF){
                 changeBulbTicking(750);
                 lowF = false;
                 midF = false;
@@ -152,6 +175,11 @@ public class LightTimer {
                         image.setImageResource(R.drawable.flower_stage_3);
                     }else if(millisUntilFinished <= 10000){
                         image.setImageResource(R.drawable.flower_stage_4);
+                        if(!ended) {
+                            playBee();
+                            stopSensor();
+                            ended = true;
+                        }
                     }
                 }
                 timeleft = millisUntilFinished;
@@ -161,8 +189,7 @@ public class LightTimer {
                 if (debugText != null){
                     debugText.setText(score + "");
                 }
-                stopSensor();
-                //enable next level
+                //TO-DO enable next level
             }
         };
         globalTimer.start();

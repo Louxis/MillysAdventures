@@ -36,12 +36,7 @@ public class FlowerLevel extends AppCompatActivity {
         setContentView(R.layout.activity_flower_level);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-        gameTimer = new LightTimer(this,(ImageView)findViewById(R.id.flowerImage),30000,1000, (SensorManager) getSystemService(Context.SENSOR_SERVICE), (TextView)findViewById(R.id.secondText));
-        ImageView bulbImage = (ImageView)findViewById(R.id.bulbImg);
-        ImageView beeImage = (ImageView)findViewById(R.id.beeImg);
-        if(bulbImage != null){
-            gameTimer.setBulb(bulbImage);
-        }
+        gameTimer = new LightTimer(this);
         gameTimer.start();
     }
 

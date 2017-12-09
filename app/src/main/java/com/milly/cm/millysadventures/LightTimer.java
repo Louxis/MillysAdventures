@@ -22,53 +22,39 @@ import android.widget.TextView;
  */
 
 public class LightTimer {
-    private ImageView image;
-    private long timeleft;
-    private int timeskips;
+    private ImageView flowerImage;
+    private long timeLeft;
+    private int timeSkips;
     private SensorManager mSensorManager;
     private Sensor lightSensor;
     private TextView debugText;
     private CountDownTimer globalTimer;
     private ImageView bulbView;
-    private ImageView beeView;
-    private TranslateAnimation beeAnimation;
     private int score;
-    //Used to calculate time offset
-    private long baseTime;
-    //Calculate time bonus
-    private boolean penalty = false;
-    private boolean mod1 = false;
-    private boolean mod2 = false;
-    //change bulb tick rate
-    private boolean lowF = false;
-    private boolean midF = false;
-    private boolean highF = false;
-    private boolean vHighF = false;
     private Activity level;
     private boolean ended = false;
+    //constants
+    private final int TIME_LEFT = 30000;
+    private final int TIME_SKIPS = 1000;
+    private final int BEE_OFFSET = 160;
 
-    public LightTimer (Activity level, ImageView image, long timeleft, int timeskips, SensorManager manager, TextView debugText){
-        this.image = image;
-        this.timeleft = timeleft;
-        this.baseTime = timeleft;
-        this.timeskips = timeskips;
-        mSensorManager = manager;
-        lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+    public LightTimer (Activity level){
         this.level = level;
-        this.debugText = debugText;
-    }
-
-    public void setBulb(ImageView bulb){
-        this.bulbView = bulb;
+        this.timeLeft = TIME_LEFT;
+        this.timeSkips = TIME_SKIPS;
+        mSensorManager = (SensorManager) level.getSystemService(Context.SENSOR_SERVICE);
+        lightSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+        this.flowerImage = (ImageView)level.findViewById(R.id.flowerImage);
+        this.debugText = (TextView)level.findViewById(R.id.secondText);
+        this.bulbView = (ImageView)level.findViewById(R.id.bulbImg);
     }
 
     public void playBee() {
-        this.beeView =  (ImageView)level.findViewById(R.id.beeImg);
-        int beeOffset = 160;
-        int centerScreen = level.getResources().getDisplayMetrics().widthPixels/2 + ( beeOffset / 2);
-        beeView.setX(beeView.getX() + beeOffset);
-        beeAnimation = new TranslateAnimation(0.0f, -centerScreen + beeOffset,
-                0.0f, 0.0f);          //  new TranslateAnimation(xFrom,xTo, yFrom,yTo)
+        ImageView beeView =  (ImageView)level.findViewById(R.id.beeImg);
+        int centerScreen = level.getResources().getDisplayMetrics().widthPixels/2 + ( BEE_OFFSET / 2);
+        beeView.setX(beeView.getX() + BEE_OFFSET);
+        TranslateAnimation beeAnimation = new TranslateAnimation(0.0f, -centerScreen + BEE_OFFSET,
+                0.0f, 0.0f);
         beeAnimation.setDuration(5000);
         beeAnimation.setFillAfter(true);
         beeView.setVisibility(View.VISIBLE);
@@ -91,7 +77,15 @@ public class LightTimer {
     }
 
     private final SensorEventListener mListener = new SensorEventListener(){
-
+        //Calculate time bonus
+        private boolean penalty = false;
+        private boolean mod1 = false;
+        private boolean mod2 = false;
+        //change bulb tick rate
+        private boolean lowF = false;
+        private boolean midF = false;
+        private boolean highF = false;
+        private boolean vHighF = false;
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (debugText != null){
@@ -125,7 +119,7 @@ public class LightTimer {
             //-----
             if(event.values[0] < 150 && !penalty){
                 stop();
-                timeleft += 5000;
+                timeLeft += 5000;
                 penalty = true;
                 mod1 = false;
                 mod2 = false;
@@ -134,7 +128,7 @@ public class LightTimer {
             }
             if(event.values[0] < 350 && event.values[0] >= 150 && !mod1){
                 stop();
-                timeleft -= 4000;
+                timeLeft -= 4000;
                 penalty = false;
                 mod2 = false;
                 mod1 = true;
@@ -143,7 +137,7 @@ public class LightTimer {
             }
             if(event.values[0] < 1000 && event.values[0] >= 350 && !mod2){
                 stop();
-                timeleft -= 5000;
+                timeLeft -= 5000;
                 penalty = false;
                 mod1 = false;
                 mod2 = true;
@@ -166,26 +160,28 @@ public class LightTimer {
     }
 
     public void start(){
-        globalTimer = new CountDownTimer(timeleft, timeskips) {
+        globalTimer = new CountDownTimer(timeLeft, timeSkips) {
             public void onTick(long millisUntilFinished) {
-                if(image != null){
-                    if (millisUntilFinished <= baseTime*0.75 && millisUntilFinished > baseTime*0.5){
-                        image.setImageResource(R.drawable.flower_stage_2);
-                    }else if(millisUntilFinished <= baseTime*0.5 && millisUntilFinished > baseTime*0.25){
-                        image.setImageResource(R.drawable.flower_stage_3);
+                Log.d("Test","Started!");
+                if(flowerImage != null){
+                    if (millisUntilFinished <= TIME_LEFT*0.75 && millisUntilFinished > TIME_LEFT*0.5){
+                        flowerImage.setImageResource(R.drawable.flower_stage_2);
+                    }else if(millisUntilFinished <= TIME_LEFT*0.5 && millisUntilFinished > TIME_LEFT*0.25){
+                        flowerImage.setImageResource(R.drawable.flower_stage_3);
                     }else if(millisUntilFinished <= 10000){
-                        image.setImageResource(R.drawable.flower_stage_4);
+                        flowerImage.setImageResource(R.drawable.flower_stage_4);
                         if(!ended) {
                             playBee();
                             stopSensor();
                             ended = true;
                         }
                     }
+                } else{
+                    flowerImage = (ImageView)level.findViewById(R.id.flowerImage);
                 }
-                timeleft = millisUntilFinished;
+                timeLeft = millisUntilFinished;
             }
             public void onFinish() {
-                Log.d("FinishTest","I finished!");
                 if (debugText != null){
                     debugText.setText(score + "");
                 }

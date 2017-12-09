@@ -2,15 +2,21 @@ package com.milly.cm.millysadventures;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
-import android.graphics.Rect;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 
 import java.util.Random;
@@ -21,7 +27,12 @@ import java.util.Random;
  */
 public class FallingCarrots extends AppCompatActivity implements View.OnTouchListener{
 
-    private ImageView basket, pickup;
+    private ImageView basket, pickup, touchView;
+    private Random rand = null;
+    private ConstraintLayout.LayoutParams params;
+    private TranslateAnimation anim;
+    private Point displaySize;
+    private int carrotsCaugt = 0, totalCarrots = 0, totalWorms = 0, totalWormsCaught = 0;
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -101,6 +112,11 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        basket = (ImageView) findViewById(R.id.basketImageView);
+        pickup = (ImageView) findViewById(R.id.pickupImageView);
+        ConstraintLayout.LayoutParams basketparams = (ConstraintLayout.LayoutParams) pickup.getLayoutParams();
+        basketparams.verticalBias = 0;
+        pickup.setLayoutParams(basketparams);
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -121,23 +137,107 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
         // Force app to remain in landscape mode
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        // Code for slider
+        // Set touchListener on basket
+        basket.setOnTouchListener(this);
 
-        ImageView basketimage = (ImageView) findViewById(R.id.basketImageView);
+        // Set displaysize
+        Display display = getWindowManager().getDefaultDisplay();
+        displaySize = new Point();
+        display.getSize(displaySize);
 
-        basketimage.setOnTouchListener(this);
+        //Animation paramaters
+        final int amountToMoveDown = (displaySize.y - 140);//displaySize.y/4);
+        final int duration = 2000;
+
+        anim = new TranslateAnimation(0, 0, 0, amountToMoveDown);
+        anim.setDuration(duration);
+        anim.setInterpolator(new LinearInterpolator() );
+        anim.setAnimationListener(new TranslateAnimation.AnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animation animation) { }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) { }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                ConstraintLayout.LayoutParams lparams = (ConstraintLayout.LayoutParams) pickup.getLayoutParams();
+                lparams.topMargin += amountToMoveDown;
+                pickup.setLayoutParams(lparams);
+
+            }
+        });
+        timer(60000, 66);
+
     }
+
+
+    private void timer(int totalTime, int timeInterval){
+        pickup.startAnimation(anim);
+        pickup.setContentDescription("carrot");
+        new CountDownTimer(totalTime, timeInterval) {
+
+            public void onTick(long millisUntilFinished) {
+
+                if (basket.getRight() >= pickup.getLeft() && basket.getLeft() <= pickup.getRight() && basket.getTop() <= pickup.getBottom()) {
+
+                    if(pickup.getContentDescription().equals("carrot") ){
+                        totalCarrots+=1;
+                        carrotsCaugt+=1;
+                        Log.d("Carrot",totalCarrots + " Total carrots. \n" + carrotsCaugt + " Caugt");
+                    }else if(pickup.getContentDescription().equals("worm") ){
+                        totalWorms+=1;
+                        totalWormsCaught+=1;
+                    }
+                    randomisePickupPosition();
+
+                }
+                else if ( basket.getTop() <= pickup.getBottom()){
+                    if(pickup.getContentDescription().equals("carrot") ){
+                        totalCarrots+=1;
+                    }
+                    else if(pickup.getContentDescription().equals("worm") ){
+                        totalWorms+=1;
+                    }
+                    randomisePickupPosition();
+                }
+
+            }
+
+            public void onFinish() {
+            }
+        }.start();
+
+    }
+
+    private void randomisePickupPosition(){
+        rand = new Random();
+        ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) pickup.getLayoutParams();
+        //doesn't take into account screen size
+        params.horizontalBias = (float) (rand.nextInt(9) / 10.0 + 0.1);
+        //params.verticalBias = 0;
+        params.topMargin = 0;
+        int r = rand.nextInt(7);
+        if(r == 6){
+            pickup.setImageResource(R.drawable.wormvertical80);
+            pickup.setContentDescription("worm");
+        }else if(pickup.getContentDescription().equals("worm")){
+            pickup.setImageResource(R.drawable.carrot80);
+            pickup.setContentDescription("carrot");
+        }
+        pickup.setLayoutParams(params);
+        pickup.startAnimation(anim);
+    }
+
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        ImageView view = (ImageView) v;
-        basket = (ImageView) findViewById(R.id.basketImageView);
-        pickup = (ImageView) findViewById(R.id.pickupImageView);
-        float x = 0, dx = 100;
-        ConstraintLayout.LayoutParams parms = (ConstraintLayout.LayoutParams) view.getLayoutParams();
-        ConstraintLayout.LayoutParams parms2 = (ConstraintLayout.LayoutParams) pickup.getLayoutParams();
-        Random rand;
+        touchView = (ImageView) v;
+        float x, dx = pickup.getWidth()*2;
+        params = (ConstraintLayout.LayoutParams) touchView.getLayoutParams();
 
         switch(event.getAction())
         {
@@ -149,31 +249,16 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
             case MotionEvent.ACTION_MOVE :
             {
                 x = event.getRawX();
-
-                parms.leftMargin = (int) (x-dx);
-                view.setLayoutParams(parms);
-                //TODO needs vertical detection
-                if (basket.getRight() >= pickup.getLeft() && basket.getLeft() <= pickup.getRight()) {
-                    Log.d("BASKET", " YES ");
-                    rand = new Random();
-                    parms2.horizontalBias = (float) (rand.nextInt(9) / 10.0 + 0.1);
-                    pickup.setLayoutParams(parms2);
-                }else{
-                    Log.d("pos", basket.getLeft() + "");
-                    Log.d("BASKET", " NO ");
-                    //parms2.bottomMargin = (((ConstraintLayout.LayoutParams) pickup.getLayoutParams()).bottomMargin) + 1;
-                    parms2.verticalBias = (float) ((((ConstraintLayout.LayoutParams) pickup.getLayoutParams()).verticalBias) - 0.005);
-                    pickup.setLayoutParams(parms2);
-                }
+                params.leftMargin = (int) (x-100);
+                touchView.setLayoutParams(params);
             }
             break;
             case MotionEvent.ACTION_UP: {
-                //your stuff
+
             }
         }
         return true; // indicate event was handled
     }
-
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

@@ -9,4 +9,5 @@
     <string name="pine1">Pine Tree 1</string>
     <string name="pine3">Pine Tree 3</string>
     <string name="pine2">Pine Tree 2</string>
+    <string name="falling_pickup">Game pickup</string>
 </resources>

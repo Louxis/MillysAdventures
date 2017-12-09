@@ -152,7 +152,7 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
 
                 parms.leftMargin = (int) (x-dx);
                 view.setLayoutParams(parms);
-
+                //TODO needs vertical detection
                 if (basket.getRight() >= pickup.getLeft() && basket.getLeft() <= pickup.getRight()) {
                     Log.d("BASKET", " YES ");
                     rand = new Random();

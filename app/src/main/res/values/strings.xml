@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Testing</string>
+    <string name="hills" />
+    <string name="tree" />
+    <string name="worm" />
+    <string name="baby_birb1_closed" />
+    <string name="mammabirb" />
+</resources>

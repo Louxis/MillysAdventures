@@ -6,7 +6,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.opengl.Visibility;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
@@ -18,7 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by jcper on 12/3/2017.
+ * Created by José Pereira 2017
+ * This class will manage timer and sensors. Is also responsible to change the on screen animations.
  */
 
 public class LightTimer {
@@ -31,9 +31,10 @@ public class LightTimer {
     private CountDownTimer globalTimer;
     private ImageView bulbView;
     private int score;
+    //flower level activity
     private Activity level;
     private boolean ended = false;
-    //constants
+
     private final int TIME_LEFT = 30000;
     private final int TIME_SKIPS = 1000;
     private final int BEE_OFFSET = 160;
@@ -47,8 +48,12 @@ public class LightTimer {
         this.flowerImage = (ImageView)level.findViewById(R.id.flowerImage);
         this.debugText = (TextView)level.findViewById(R.id.secondText);
         this.bulbView = (ImageView)level.findViewById(R.id.bulbImg);
+        score = 1;
     }
 
+    /**
+     * Play bee animation at the end of the level.
+     */
     public void playBee() {
         ImageView beeView =  (ImageView)level.findViewById(R.id.beeImg);
         int centerScreen = level.getResources().getDisplayMetrics().widthPixels/2 + ( BEE_OFFSET / 2);
@@ -65,6 +70,10 @@ public class LightTimer {
         return score;
     }
 
+    /**
+     * Change bulb tick rate
+     * @param delay
+     */
     private void changeBulbTicking(int delay){
             Animation animation = new AlphaAnimation(1, 0);
             animation.setDuration(delay);
@@ -76,6 +85,11 @@ public class LightTimer {
             }
     }
 
+    /**
+     * Sensor listener to calculate flower phase and bulb ticking rate.
+     * The flower can't get the same modifier twice in a row,
+     * it can however change between them quickly.
+     */
     private final SensorEventListener mListener = new SensorEventListener(){
         //Calculate time bonus
         private boolean penalty = false;
@@ -89,7 +103,7 @@ public class LightTimer {
         @Override
         public void onSensorChanged(SensorEvent event) {
             if (debugText != null){
-                debugText.setText("Normal: " + event.values[0] + "Shortened: " + event.values[0]/10);
+                debugText.setText("Normal: " + event.values[0]);
             }
             if(event.values[0] < 150 && !lowF){
                 changeBulbTicking(250);
@@ -151,14 +165,23 @@ public class LightTimer {
         }
     };
 
+    /**
+     * To use on resume and on creation
+     */
     public void registerSensor(){
         mSensorManager.registerListener(mListener,lightSensor,SensorManager.SENSOR_DELAY_NORMAL);
     }
 
+    /**
+     * To use onDestroy and onFinish
+     */
     public void stopSensor(){
         mSensorManager.unregisterListener(mListener);
     }
 
+    /**
+     * Starts time the controls the general gameplay
+     */
     public void start(){
         globalTimer = new CountDownTimer(timeLeft, timeSkips) {
             public void onTick(long millisUntilFinished) {

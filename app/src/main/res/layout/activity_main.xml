@@ -97,8 +97,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/score_frame"
-        android:layout_width="589dp"
-        android:layout_height="384dp"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
@@ -106,19 +106,19 @@
         android:background="@drawable/newframe"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.722"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="@+id/erasable"
         app:layout_constraintTop_toTopOf="@+id/erasable"
-        app:layout_constraintVertical_bias="1.0">
+        app:layout_constraintVertical_bias="0.0">
 
         <ImageView
             android:id="@+id/carrot1"
             android:layout_width="91dp"
             android:layout_height="86dp"
             android:layout_marginStart="136dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="76dp"
             app:layout_constraintEnd_toStartOf="@+id/carrot2"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -130,12 +130,13 @@
             android:layout_width="91dp"
             android:layout_height="86dp"
             android:layout_marginBottom="8dp"
-            android:layout_marginTop="84dp"
+            android:layout_marginTop="76dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.058"
+            app:layout_constraintVertical_bias="0.0"
             app:srcCompat="@drawable/carrot" />
 
         <ImageView
@@ -143,7 +144,7 @@
             android:layout_width="91dp"
             android:layout_height="86dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginTop="96dp"
+            android:layout_marginTop="76dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@+id/carrot2"
@@ -151,12 +152,35 @@
             app:srcCompat="@drawable/carrot" />
 
         <ImageButton
-            android:id="@+id/androidhome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@mipmap/ic_launcher"
+            android:id="@+id/next_level"
+            android:layout_width="98dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.693"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.66"
+            app:srcCompat="@drawable/next_button" />
+
+        <ImageButton
+            android:id="@+id/home_button"
+            android:layout_width="98dp"
+            android:layout_height="60dp"
+            android:adjustViewBounds="true"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/home_button"
             tools:layout_editor_absoluteX="148dp"
-            tools:layout_editor_absoluteY="209dp" />
+            tools:layout_editor_absoluteY="179dp" />
+
     </android.support.constraint.ConstraintLayout>
 
 </android.support.constraint.ConstraintLayout>

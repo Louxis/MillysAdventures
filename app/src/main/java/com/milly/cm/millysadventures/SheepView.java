@@ -1,41 +1,35 @@
 package com.milly.cm.millysadventures;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.CountDownTimer;
-import android.provider.SyncStateContract;
-import android.support.constraint.ConstraintLayout;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by dmpcr on 07-Dec-17.
+ * This class contains the logic of the Sheep Level;
  */
 
 public class SheepView extends View {
 
-    private ConstraintLayout frame;
-    private ImageView carrot1;
-    private ImageView carrot2;
-    private ImageView carrot3;
-    private Animation fadeInAnimation;
+    private Activity activity;
+
+    private GameScoreView scoreFrame;
 
     private ImageView scissor;
     private ImageView glove;
 
     private TextView time;
-    private CountDownTimer countDownTimer;
     private int timeLeft;
 
     private Bitmap emptyBitmap;
@@ -43,27 +37,25 @@ public class SheepView extends View {
     private Canvas vCanvas = new Canvas();
     private Paint vPaint = new Paint();
     private Path vPath = new Path();
-
     private int score;
 
+    /**
+     *
+     * @param activity the current Activity;
+     * @param size the size of the screen in which the game is displayed;
+     */
+    public SheepView(Activity activity, Point size){
+        super(activity);
+        this.activity = activity;
+        this.scissor = (ImageView)activity.findViewById(R.id.scissor);
+        this.glove = (ImageView)activity.findViewById(R.id.glove);
+        this.time = (TextView)activity.findViewById(R.id.timer);
 
-    public SheepView(Context context, int width, int height, TextView timeText, ImageView scissorImage, ImageView gloveImage, ConstraintLayout frameLayout, ImageView carrotImage1, ImageView carrotImage2, ImageView carrotImage3){
-        super(context);
-        this.time = timeText;
-        this.scissor = scissorImage;
-        this.glove = gloveImage;
-        this.frame = frameLayout;
-        this.carrot1 = carrotImage1;
-        this.carrot2 = carrotImage2;
-        this.carrot3 = carrotImage3;
-
-        fadeInAnimation = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom);
-        frame.setVisibility(INVISIBLE);
         startTime();
 
-        Bitmap rawBitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ribeiro);
+        Bitmap rawBitmap = BitmapFactory.decodeResource(this.activity.getResources(), R.drawable.ribeiro);
 
-        vBitmap = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+        vBitmap = Bitmap.createBitmap(size.x,size.y, Bitmap.Config.ARGB_8888);
         this.emptyBitmap = Bitmap.createBitmap(vBitmap.getWidth(), vBitmap.getHeight(), vBitmap.getConfig());
 
         vCanvas.setBitmap(vBitmap);
@@ -78,34 +70,24 @@ public class SheepView extends View {
         vPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_IN));
     }
 
+    /**
+     * This method will allow the player to erase the Sheep's wool;
+     * @param canvas where will erase the wool;
+     */
     @Override
     protected void onDraw(Canvas canvas){
         canvas.drawBitmap(vBitmap, 0,0, null);
         super.onDraw(canvas);
-        if(timeLeft != 0){
+        if(timeLeft != 0) {
             vCanvas.drawPath(vPath, vPaint);
-            if (vBitmap.sameAs(emptyBitmap)) {
-                if(timeLeft <= 15){
-                    this.score = 1;
-                    carrot1.setVisibility(INVISIBLE);
-                    carrot3.setVisibility(INVISIBLE);
-                } else if (timeLeft <= 30 && timeLeft > 15 ){
-                    this.score = 2;
-                    carrot2.setVisibility(INVISIBLE);
-                } else if (timeLeft > 30){
-                    this.score = 3;
-                }
-                countDownTimer.cancel();
-                this.setWillNotDraw(true);
-                frame.setVisibility(VISIBLE);
-                Animation fadeInAnimation = AnimationUtils.loadAnimation(this.getContext(), R.anim.enter_from_bottom);
-                frame.startAnimation(fadeInAnimation);
-            }
-        } else{
-            this.setWillNotDraw(true);
         }
     }
 
+    /**
+     * This method applies the different gameplay operations depending on the kind of event it records;
+     * @param event kind of event that's being recorded;
+     * @return bool depending on the touch event
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event){
         float xPos = event.getX();
@@ -125,10 +107,13 @@ public class SheepView extends View {
         return true;
     }
 
+    /**
+     * This method starts a timer that limits the time that the player has to complete the minigame;
+     */
     private void startTime(){
-        timeLeft = 10;
-        countDownTimer = new CountDownTimer(10 * 1000, 1000){
-            @Override
+        timeLeft = 45;
+        new CountDownTimer(45 * 1000, 1000){
+
             public void onTick(long timeUntilFinished){
                 time.setText("" + timeUntilFinished/1000);
                 if(timeLeft % 2 == 0){
@@ -138,21 +123,31 @@ public class SheepView extends View {
                     scissor.setImageResource(R.drawable.closed_scissor);
                 }
                 timeLeft--;
+                if (vBitmap.sameAs(emptyBitmap)) {
+                    if(timeLeft <= 15){
+                        score = 1;
+                    } else if (timeLeft <= 30 && timeLeft > 15 ){
+                        score = 2;
+                    } else if (timeLeft > 30){
+                        score = 3;
+                    }
+                    scoreFrame = new GameScoreView(activity, score, );
+                    this.cancel();
+                }
             }
             @Override
             public void onFinish(){
                 timeLeft--;
                 score = 1;
-                frame.setVisibility(VISIBLE);
-                carrot1.setVisibility(INVISIBLE);
-                carrot3.setVisibility(INVISIBLE);
-                frame.startAnimation(fadeInAnimation);
                 time.setText("" + timeLeft);
+                scoreFrame = new GameScoreView(activity, score, );
             }
-        };
-        countDownTimer.start();
+        }.start();
     }
 
+    /**
+     * This method animates the motion of the instruction glove;
+     */
     private void gloveAnimation(){
         TranslateAnimation gloveAnimation = new TranslateAnimation(0.0f, 200f, 0,0);
         gloveAnimation.setDuration(1500);

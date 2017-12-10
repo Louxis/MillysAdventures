@@ -28,21 +28,13 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
+        findViewById(R.id.score_frame).setVisibility(View.GONE);
+
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
-        TextView timeText = (TextView)findViewById(R.id.timer);
-        ImageView scissorImage = (ImageView)findViewById(R.id.scissor);
-        ImageView gloveImage = (ImageView)findViewById(R.id.glove);
-        ConstraintLayout frameLayout = (ConstraintLayout)findViewById(R.id.score_frame);
-        ImageView carrot1Image = (ImageView)findViewById(R.id.carrot1);
-        ImageView carrot2Image = (ImageView)findViewById(R.id.carrot2);
-        ImageView carrot3Image = (ImageView)findViewById(R.id.carrot3);
-
-        ImageButton homeButton = (ImageButton)findViewById(R.id.androidhome);
-
-        sheepView = new SheepView(MainActivity.this, size.x, size.y, timeText, scissorImage, gloveImage, frameLayout, carrot1Image, carrot2Image, carrot3Image);
+        sheepView = new SheepView(this, size);
 
         ConstraintLayout rootLayout = (ConstraintLayout) findViewById(R.id.erasable);
         rootLayout.addView(sheepView);

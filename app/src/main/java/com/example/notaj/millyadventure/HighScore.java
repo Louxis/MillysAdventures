@@ -1,29 +1,20 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
@@ -145,7 +136,7 @@ public class HighScore extends AppCompatActivity implements OnMapReadyCallback, 
             @Override
             public void onClick(View v) {
 
-                startActivity(new Intent(HighScore.this, Testing.class));
+                startActivity(new Intent(HighScore.this, MainMenu.class));
 
             }
         });

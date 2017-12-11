@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_grad"
-    tools:context="com.example.notaj.testing.SheepLevel">
+    tools:context="com.example.notaj.millyadventure.SheepLevel">
 
     <ImageView
         android:id="@+id/imageView6"

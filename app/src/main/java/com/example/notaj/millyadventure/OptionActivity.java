@@ -1,10 +1,13 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
+
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.media.AudioManager;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,15 +15,22 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.Switch;
+import android.widget.TextView;
 
-import java.util.logging.Level;
+public class OptionActivity extends AppCompatActivity implements View.OnTouchListener{
 
-public class LevelSelect extends AppCompatActivity implements View.OnTouchListener{
-
+    private SeekBar volumeSeekbar = null;
+    private AudioManager audioManager = null;
     private SharedPrefs prefs;
+    private ConstraintLayout frame;
     private LocationTracker location;
+
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -95,9 +105,9 @@ public class LevelSelect extends AppCompatActivity implements View.OnTouchListen
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_level_select);
+        setContentView(R.layout.activity_option);
         mVisible = true;
         //mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -112,99 +122,123 @@ public class LevelSelect extends AppCompatActivity implements View.OnTouchListen
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
 
-        prefs= new SharedPrefs(this);
+        frame = (ConstraintLayout) findViewById(R.id.frame);
+        Animation fadeInAnimation = AnimationUtils.loadAnimation(this, R.anim.enter_from_top);
+        frame.startAnimation(fadeInAnimation);
+
+        prefs = new SharedPrefs(this);
         location = new LocationTracker(this, prefs, "userPositionInfo", "Player");
 
-        ImageButton back = findViewById(R.id.backbtn);
+        final TextView textView = (TextView) findViewById(R.id.nick);
 
-        back.setOnClickListener(new View.OnClickListener()
-        {
+        ImageButton backBtn = findViewById(R.id.backbtn);
+        backBtn.setOnClickListener(new View.OnClickListener() {
+
             @Override
-            public void onClick(View v){
-                startActivity(new Intent(LevelSelect.this, Testing.class));
-            }
+            public void onClick(View v) {
+                prefs.getSharedPrefsEditor().putString("currentName", textView.getText().toString());
+                prefs.getSharedPrefsEditor().commit();
+                startActivity(new Intent(OptionActivity.this, MainMenu.class));
 
+            }
         });
 
-        ImageButton bunnyBtn = findViewById(R.id.BunnyLvl);
-        ImageButton squirrelBtn = findViewById(R.id.SquirlLvl);
-        ImageButton sheepBtn = findViewById(R.id.SheepLvl);
-        ImageButton flowerBtn = findViewById(R.id.FlowerLvl);
-        ImageButton birdBtn = findViewById(R.id.BirdLvl);
+        Animation buttonAnimation = AnimationUtils.loadAnimation(this, R.anim.enter_from_left);
+        backBtn.startAnimation(buttonAnimation);
 
-        bunnyBtn.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v){
-                startActivity(new Intent(LevelSelect.this, FallingCarrots.class));
+        Switch locationSwitch = (Switch) findViewById(R.id.location);
+
+        if(prefs.getSharedPrefs().getString("GPS", "").equals("true")){
+            locationSwitch.setChecked(true);
+        }else{
+            locationSwitch.setChecked(false);
+        }
+
+
+
+        locationSwitch.setOnCheckedChangeListener((new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked == true){
+                    activateGPS();
+                }else{
+                    deactivateGPS();
+                }
+
+            }}));
+
+        if(prefs.getSharedPrefs().getString("currentName", null) == null){
+            textView.setText("");
+        }else{
+            textView.setText(prefs.getSharedPrefs().getString("currentName", null));
+        }
+
+
+        initControls();
+    }
+
+    @Override
+    public void onResume(){
+
+        super.onResume();
+
+        if((Switch) findViewById(R.id.location) != null){
+            Switch locationSwitch = (Switch) findViewById(R.id.location);
+            if(prefs.getSharedPrefs().getString("GPS", "").equals("true")){
+                locationSwitch.setChecked(true);
+            }else{
+                locationSwitch.setChecked(false);
             }
-
-        });;
-
-        if(prefs.getSharedPrefs().getInt("BunnyScore",0) == 0){
-            squirrelBtn.setImageResource(R.drawable.lock_button);
-            squirrelBtn.setClickable(false);
-            squirrelBtn.setEnabled(false);
-        }else{
-
-            squirrelBtn.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v){
-                    //startActivity(new Intent(LevelSelect.this, FallingCarrots.class));
-                }
-
-            });
         }
 
-        if(prefs.getSharedPrefs().getInt("BunnyScore",0) == 0){
-            sheepBtn.setImageResource(R.drawable.lock_button);
-            sheepBtn.setClickable(false);
-            sheepBtn.setEnabled(false);
-        }else{
+    }
 
-            sheepBtn.setOnClickListener(new View.OnClickListener()
+    private void initControls()
+    {
+        try
+        {
+            volumeSeekbar = (SeekBar)findViewById(R.id.volumeSeekBar);
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            volumeSeekbar.setMax(audioManager
+                    .getStreamMaxVolume(AudioManager.STREAM_MUSIC));
+            volumeSeekbar.setProgress(audioManager
+                    .getStreamVolume(AudioManager.STREAM_MUSIC));
+
+
+            volumeSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener()
             {
                 @Override
-                public void onClick(View v){
-                    startActivity(new Intent(LevelSelect.this, SheepLevel.class));
+                public void onStopTrackingTouch(SeekBar arg0)
+                {
                 }
 
-            });
-        }
-
-        if(prefs.getSharedPrefs().getInt("SheepScore",0) == 0){
-            flowerBtn.setImageResource(R.drawable.lock_button);
-            flowerBtn.setClickable(false);
-            flowerBtn.setEnabled(false);
-        }else{
-
-            flowerBtn.setOnClickListener(new View.OnClickListener()
-            {
                 @Override
-                public void onClick(View v){
-                    startActivity(new Intent(LevelSelect.this, FlowerLevel.class));
+                public void onStartTrackingTouch(SeekBar arg0)
+                {
                 }
 
-            });
-        }
-
-        if(prefs.getSharedPrefs().getInt("FlowerScore",0) == 0){
-            birdBtn.setImageResource(R.drawable.lock_button);
-            birdBtn.setClickable(false);
-            birdBtn.setEnabled(false);
-        }else{
-
-            birdBtn.setOnClickListener(new View.OnClickListener()
-            {
                 @Override
-                public void onClick(View v){
-                    startActivity(new Intent(LevelSelect.this, BirdLevel.class));
+                public void onProgressChanged(SeekBar arg0, int progress, boolean arg2)
+                {
+                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC,
+                            progress, 0);
                 }
-
             });
         }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
+
+    public void activateGPS(){
+        prefs.getSharedPrefsEditor().putString("GPS", "true");
+        prefs.getSharedPrefsEditor().commit();
+    }
+
+    public void deactivateGPS(){
+        prefs.getSharedPrefsEditor().putString("GPS", "false");
+        prefs.getSharedPrefsEditor().commit();
     }
 
     @Override
@@ -264,4 +298,5 @@ public class LevelSelect extends AppCompatActivity implements View.OnTouchListen
     public boolean onTouch(View view, MotionEvent motionEvent) {
         return false;
     }
+
 }

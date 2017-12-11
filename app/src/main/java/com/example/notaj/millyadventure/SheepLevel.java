@@ -1,10 +1,8 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
@@ -14,12 +12,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class SheepLevel extends AppCompatActivity implements View.OnTouchListener{
 

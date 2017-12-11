@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_grad"
-    tools:context="com.example.notaj.testing.FallingCarrots">
+    tools:context="com.example.notaj.millyadventure.FallingCarrots">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
          is needed to present your content, e.g. VideoView, SurfaceView,

@@ -1,7 +1,7 @@
-package com.example.notaj.testing;
-
+package com.example.notaj.millyadventure;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -11,12 +11,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageButton;
 
-public class FlowerLevel extends AppCompatActivity implements View.OnTouchListener{
-    private LightTimer gameTimer;
+public class LevelSelect extends AppCompatActivity implements View.OnTouchListener{
+
     private SharedPrefs prefs;
     private LocationTracker location;
-
     /**
      * Whether or not the system UI should be auto-hidden after
      * {@link #AUTO_HIDE_DELAY_MILLIS} milliseconds.
@@ -87,12 +87,13 @@ public class FlowerLevel extends AppCompatActivity implements View.OnTouchListen
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
+
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_flower_level);
+        setContentView(R.layout.activity_level_select);
         mVisible = true;
         //mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
@@ -106,32 +107,100 @@ public class FlowerLevel extends AppCompatActivity implements View.OnTouchListen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-        findViewById(R.id.score_frame).setVisibility(View.GONE);
 
-        prefs = new SharedPrefs(this);
-        location = new LocationTracker(this, prefs, "flowerPositionInfo", "Flower");
-        gameTimer = new LightTimer(this);
-        gameTimer.start();
-    }
+        prefs= new SharedPrefs(this);
+        location = new LocationTracker(this, prefs, "userPositionInfo", "Player");
 
-    @Override
-    protected void onResume(){
-        super.onResume();
-        gameTimer.registerSensor();
-    }
+        ImageButton back = findViewById(R.id.backbtn);
 
-    @Override
-    protected void onStop(){
-        gameTimer.stopSensor();
-        super.onStop();
-    }
+        back.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(LevelSelect.this, MainMenu.class));
+            }
 
-    public SharedPrefs getPrefs(){
-        return prefs;
-    }
+        });
 
-    public LocationTracker getLocation(){
-        return location;
+        ImageButton bunnyBtn = findViewById(R.id.BunnyLvl);
+        ImageButton squirrelBtn = findViewById(R.id.SquirlLvl);
+        ImageButton sheepBtn = findViewById(R.id.SheepLvl);
+        ImageButton flowerBtn = findViewById(R.id.FlowerLvl);
+        ImageButton birdBtn = findViewById(R.id.BirdLvl);
+
+        bunnyBtn.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v){
+                startActivity(new Intent(LevelSelect.this, FallingCarrots.class));
+            }
+
+        });;
+
+        if(prefs.getSharedPrefs().getInt("BunnyScore",0) == 0){
+            squirrelBtn.setImageResource(R.drawable.lock_button);
+            squirrelBtn.setClickable(false);
+            squirrelBtn.setEnabled(false);
+        }else{
+
+            squirrelBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v){
+                    //startActivity(new Intent(LevelSelect.this, FallingCarrots.class));
+                }
+
+            });
+        }
+
+        if(prefs.getSharedPrefs().getInt("BunnyScore",0) == 0){
+            sheepBtn.setImageResource(R.drawable.lock_button);
+            sheepBtn.setClickable(false);
+            sheepBtn.setEnabled(false);
+        }else{
+
+            sheepBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v){
+                    startActivity(new Intent(LevelSelect.this, SheepLevel.class));
+                }
+
+            });
+        }
+
+        if(prefs.getSharedPrefs().getInt("SheepScore",0) == 0){
+            flowerBtn.setImageResource(R.drawable.lock_button);
+            flowerBtn.setClickable(false);
+            flowerBtn.setEnabled(false);
+        }else{
+
+            flowerBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v){
+                    startActivity(new Intent(LevelSelect.this, FlowerLevel.class));
+                }
+
+            });
+        }
+
+        if(prefs.getSharedPrefs().getInt("FlowerScore",0) == 0){
+            birdBtn.setImageResource(R.drawable.lock_button);
+            birdBtn.setClickable(false);
+            birdBtn.setEnabled(false);
+        }else{
+
+            birdBtn.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v){
+                    startActivity(new Intent(LevelSelect.this, BirdLevel.class));
+                }
+
+            });
+        }
+
     }
 
     @Override
@@ -192,8 +261,3 @@ public class FlowerLevel extends AppCompatActivity implements View.OnTouchListen
         return false;
     }
 }
-
-
-
-
-

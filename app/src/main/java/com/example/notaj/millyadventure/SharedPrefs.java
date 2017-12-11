@@ -1,9 +1,7 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-
-import java.io.Console;
 
 import static android.content.Context.MODE_PRIVATE;
 

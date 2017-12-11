@@ -1,4 +1,4 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -10,7 +10,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -19,7 +18,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 
-public class Testing extends AppCompatActivity implements View.OnTouchListener{
+public class MainMenu extends AppCompatActivity implements View.OnTouchListener{
 
     private ConstraintLayout frame;
     private SharedPrefs prefs;
@@ -143,7 +142,7 @@ public class Testing extends AppCompatActivity implements View.OnTouchListener{
             @Override
             public void onClick(View v) {
 
-            startActivity(new Intent(Testing.this, OptionActivity.class));
+            startActivity(new Intent(MainMenu.this, OptionActivity.class));
             }
         });
 
@@ -153,7 +152,7 @@ public class Testing extends AppCompatActivity implements View.OnTouchListener{
         {
             @Override
             public void onClick(View v){
-                startActivity(new Intent(Testing.this, LevelSelect.class));
+                startActivity(new Intent(MainMenu.this, LevelSelect.class));
             }
 
         });
@@ -164,7 +163,7 @@ public class Testing extends AppCompatActivity implements View.OnTouchListener{
         {
             @Override
             public void onClick(View v){
-                startActivity(new Intent(Testing.this, HighScore.class));
+                startActivity(new Intent(MainMenu.this, HighScore.class));
             }
 
         });

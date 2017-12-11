@@ -1,4 +1,4 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

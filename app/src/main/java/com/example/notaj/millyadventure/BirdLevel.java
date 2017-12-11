@@ -1,9 +1,8 @@
-package com.example.notaj.testing;
+package com.example.notaj.millyadventure;
 
 import android.annotation.SuppressLint;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
-import android.media.MediaPlayer;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.constraint.ConstraintLayout;
@@ -298,7 +297,7 @@ public class BirdLevel extends AppCompatActivity implements View.OnTouchListener
                 }
                 calculateCarrots();
                 //scoreview && nextLevel
-                scoreFrame = new GameScoreView(BirdLevel.this, carrots, Testing.class);
+                scoreFrame = new GameScoreView(BirdLevel.this, carrots, MainMenu.class);
                 prefs.getSharedPrefsEditor().putInt("BirdScore", carrots);
 
                 prefs.getSharedPrefsEditor().commit();

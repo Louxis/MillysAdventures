@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_grad"
-    tools:context="com.example.notaj.testing.BirdLevel">
+    tools:context="com.example.notaj.millyadventure.BirdLevel">
 
 
     <ImageView

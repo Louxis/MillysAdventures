@@ -72,7 +72,7 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
         }
     };
 
-    private View mControlsView;
+    //private View mControlsView;
     private final Runnable mShowPart2Runnable = new Runnable() {
         @Override
         public void run() {
@@ -81,7 +81,7 @@ public class FallingCarrots extends AppCompatActivity implements View.OnTouchLis
             if (actionBar != null) {
                 actionBar.show();
             }
-            mControlsView.setVisibility(View.VISIBLE);
+            //mControlsView.setVisibility(View.VISIBLE);
         }
     };
     private boolean mVisible;

@@ -43,7 +43,7 @@ public class SharedPrefs {
 
 
         if(list[0].equals("0.0") && list[1].equals("0.0")){
-            editor.putString("userPositionInfo","38.5,-8.8,Player");
+            editor.putString("userPositionInfo","38.5223503,-8.8383939,Player");
         }
 
 
